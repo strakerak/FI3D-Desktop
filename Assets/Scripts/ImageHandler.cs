@@ -24,12 +24,13 @@ public class ImageHandler : NetworkBehaviour
         }
         else
         {
+            Debug.Log("NO OWNERSHIP OMG!");
             //GetComponent<ImageHandler>().enabled = false;
         }
 
         if (!base.IsServer)
         {
-            GetComponent<ImageHandler>().enabled = false;
+            //GetComponent<ImageHandler>().enabled = false;
         }
     }
 
@@ -63,46 +64,48 @@ public class ImageHandler : NetworkBehaviour
             rend.sharedMaterial = images[imageIndex];
         }
 
-        RequestOwnershipOnClick();
+        if(Input.GetKeyDown(KeyCode.J))
+        { 
+            RequestOwnershipOnClick(); 
+        }
     }
 
     private void RequestOwnershipOnClick()
     {
-        if (!base.IsOwner)
-            return;
 
-        if (!Input.GetKeyDown(KeyCode.Mouse0))
-            return;
-
-        RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
+        /*if (!base.IsOwner)
         {
-            NetworkObject nob = hit.collider.GetComponent<NetworkObject>();
+            Debug.Log("WE OUT");
+            return;
+        }*/
 
-            if(nob != null && !nob.IsOwner)
-            {
-                Debug.Log("Sending Ownership Rquest for " + hit.collider.gameObject.name);
-                ServerRequestOwnership(nob);
-            }
+
+        NetworkObject nob = cube.GetComponent<NetworkObject>();
+
+        if (nob != null && !nob.IsOwner)
+        {
+            Debug.Log("Sending Ownership Request for " + cube.gameObject.name);
+            ServerRequestOwnership(nob);
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void ServerRequestOwnership(NetworkObject nob)
     {
-        Debug.Log("Receivd ownership for " + nob.gameObject.name);
+        Debug.Log("Received ownership for " + nob.gameObject.name);
         nob.GiveOwnership(base.Owner);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void changeImage(GameObject cube, int imageIndex)
     {
         UpdateImage(cube, imageIndex);
     }
 
     [ObserversRpc]
-    public void UpdateImage(GameObject cube, int imageIndex)
+    public void UpdateImage(GameObject cube, int imageIndexD)
     {
-        cube.GetComponent<ImageHandler>().GetComponent<Renderer>().material = images[imageIndex];
+        cube.GetComponent<ImageHandler>().GetComponent<Renderer>().material = images[imageIndexD];
+        imageIndex = imageIndexD;
     }
 }
