@@ -6,7 +6,7 @@ using FishNet.Object;
 
 public class ModelController : NetworkBehaviour
 {
-    float rotationSpeed = 1f; //rotation speed for movement
+    public float rotationSpeed = 1f; //rotation speed for movement
 
     
 
