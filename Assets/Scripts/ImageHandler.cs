@@ -9,10 +9,13 @@ public class ImageHandler : NetworkBehaviour
 {
 
     public Material[] images; //this is to change colors at first, will be adjusted to change for the MRI pics
+    public GameObject[] spots; //this is to handle the slice spots
+
     Renderer rend; //to render the images/colors
     public int imageIndex = 0;
     public int phaseIndex = 0;
     public GameObject cube;
+    public GameObject side;
     // Start is called before the first frame update
 
     public override void OnStartClient()
@@ -52,6 +55,7 @@ public class ImageHandler : NetworkBehaviour
                 imageIndex = images.Length - 1;
             changeImage(cube, imageIndex);
             rend.sharedMaterial = images[imageIndex];
+            side.transform.position = new Vector3(spots[imageIndex].transform.position.x, spots[imageIndex].transform.position.y, spots[imageIndex].transform.position.z);
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -62,6 +66,7 @@ public class ImageHandler : NetworkBehaviour
                 imageIndex = 0;
             changeImage(cube, imageIndex);
             rend.sharedMaterial = images[imageIndex];
+            side.transform.position = new Vector3(spots[imageIndex].transform.position.x, spots[imageIndex].transform.position.y, spots[imageIndex].transform.position.z);
         }
 
         if(Input.GetKeyDown(KeyCode.J))
