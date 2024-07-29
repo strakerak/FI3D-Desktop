@@ -1,4 +1,5 @@
 from PIL import Image
+import PIL
 import numpy as np
 
 print("hi")
@@ -7,10 +8,9 @@ pixels = []
 imageTxt = ""
 
 #import image
-f = open("C:/Users/Samy/Desktop/FI3D-Unity-Android/Assets/Materials/DemoData/Cardiac/Slices/Data/Phase_1.txt" , "r")
+f = open("C:/Users/smmt/OneDrive/Desktop/FI-Unity-Android-main/Assets/Materials/DemoData/Cardiac/Slices/Data/Phase_0.txt" , "r")
 imageTxt = f.readline()
-
-indexMax = 192*256
+print(len(imageTxt))
 index = 0
 imageArr = imageTxt.split(",")
 for x in range(0,10):
@@ -24,7 +24,9 @@ for x in range(0,10):
     array = np.array(pixels, dtype=np.uint8)
 
     new_image = Image.fromarray(array)
-    new_image.save(f"Phase_1_{x}.png")
+    new_image = new_image.rotate(90, PIL.Image.NEAREST, expand=1)
+    new_image.save(f"Phase_0_{x}.png")
+    print("saved as",x)
     pixels=[]
     
 
