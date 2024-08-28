@@ -111,6 +111,7 @@ public class ImageHandler : NetworkBehaviour
     public void UpdateImage(GameObject cube, int imageIndexD)
     {
         cube.GetComponent<ImageHandler>().GetComponent<Renderer>().material = images[imageIndexD];
+        side.transform.position = new Vector3(spots[imageIndexD].transform.position.x, spots[imageIndexD].transform.position.y, spots[imageIndexD].transform.position.z);
         imageIndex = imageIndexD;
     }
 }

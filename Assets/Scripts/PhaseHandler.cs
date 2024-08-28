@@ -26,6 +26,8 @@ public class SliceHandler : NetworkBehaviour
     GameObject epiTemp;
     GameObject endoTemp;
 
+    public bool animate;
+
     // Start is called before the first frame update
 
     public override void OnStartClient()
@@ -39,6 +41,7 @@ public class SliceHandler : NetworkBehaviour
         {
             Debug.Log("NO OWNERSHIP OMG! FOR THE SLICE");
         }
+        animate = false;
 
     }
 
@@ -56,7 +59,9 @@ public class SliceHandler : NetworkBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+
+
+        if (Input.GetKeyDown(KeyCode.Z) && !animate)
         {
             Debug.Log("INDEX DOWN");
             imageIndex -= 1;
@@ -73,9 +78,10 @@ public class SliceHandler : NetworkBehaviour
             Destroy(epiTemp);
             Destroy(endoTemp);
             changePhase(cube, imageIndex);
+
         }
 
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.X) && !animate)
         {
             Debug.Log("INDEX UP");
             imageIndex += 1;
@@ -100,6 +106,39 @@ public class SliceHandler : NetworkBehaviour
         }
     }
 
+    private IEnumerator __animatePhase()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.055f);
+        while(animate)
+        {
+            yield return wait;
+            imageIndex += 1;
+            if (imageIndex > endos.Length - 1)
+                imageIndex = 0;
+
+            epiTemp = epiObject;
+            endoTemp = endoObject;
+            Destroy(epiTemp);
+            Destroy(endoTemp);
+            epiObject = Instantiate(epis[imageIndex], cube.transform.position, cube.transform.rotation, modelObject.transform);
+            endoObject = Instantiate(endos[imageIndex], cube.transform.position, cube.transform.rotation, modelObject.transform);
+
+            changePhase(cube, imageIndex);
+        }
+    }
+    public void setAnimator()
+    {
+        if (animate)
+        {
+            animate = false;
+        }
+        else
+        {
+            animate = true;
+            StartCoroutine(__animatePhase());
+        }
+
+    }
     private void RequestOwnershipOnClick()
     {
 
@@ -135,6 +174,11 @@ public class SliceHandler : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void changePhase(GameObject cube, int phase)
     {
+        float timer = 0f;
+        while (timer < 1f)
+            timer += Time.deltaTime;
+
+        
         UpdatePhase(cube, phase);
     }
 

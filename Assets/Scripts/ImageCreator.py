@@ -8,7 +8,7 @@ pixels = []
 imageTxt = ""
 
 #import image
-f = open("C:/Users/smmt/OneDrive/Desktop/FI-Unity-Android-main/Assets/Materials/DemoData/Cardiac/Slices/Data/Phase_0.txt" , "r")
+f = open("C:/Users/smmt/OneDrive/Desktop/Unity Projects/FI-Unity-Android-main/Assets/Materials/DemoData/Cardiac/Slices/Data/Phase_0.txt" , "r")
 imageTxt = f.readline()
 print(len(imageTxt))
 index = 0
